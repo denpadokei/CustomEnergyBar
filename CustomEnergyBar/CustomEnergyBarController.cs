@@ -19,10 +19,13 @@ namespace CustomEnergyBar
     public class CustomEnergyBarController : MonoBehaviour
     {
         // These methods are automatically called by Unity, you should remove any you aren't using.
+        private CoreGameHUDController coreGameHUDController;
+        [Inject]
         private GameEnergyCounter gameEnergyCounter;
-        private GameEnergyUIPanel gameEnergyUIPanel;
+        [Inject]
+        private GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
+        private GameObject _energyPanelGO;
         private Image barImage;
-
         #region Monobehaviour Messages
         /// <summary>
         /// Only ever called once, mainly used to initialize variables.
@@ -30,6 +33,21 @@ namespace CustomEnergyBar
         private void Awake()
         {
             Plugin.Log?.Debug($"{name}: Awake()");
+            this.coreGameHUDController = Resources.FindObjectsOfTypeAll<CoreGameHUDController>().FirstOrDefault();
+            this._energyPanelGO = this.coreGameHUDController.GetField<GameObject, CoreGameHUDController>("_energyPanelGO");
+
+            foreach (var item in _energyPanelGO.GetComponentsInChildren<Image>()) {
+                if (item == null) {
+                    continue;
+                }
+                if (item.name == "EnergyBar") {
+                    this.barImage = item;
+                }
+            }
+            var beatmap = this.gameplayCoreSceneSetupData.difficultyBeatmap;
+            if (0 < beatmap.beatmapData.spawnRotationEventsCount) {
+                this.barImage.rectTransform.sizeDelta = new Vector2(0f, 0.7f);
+            }
         }
 
         private void Start()
@@ -37,7 +55,6 @@ namespace CustomEnergyBar
             if (this.gameEnergyCounter == null) {
                 return;
             }
-
             this.gameEnergyCounter.gameEnergyDidChangeEvent += this.GameEnergyCounter_gameEnergyDidChangeEvent;
             this.GameEnergyCounter_gameEnergyDidChangeEvent(this.gameEnergyCounter.energy);
         }
@@ -49,18 +66,8 @@ namespace CustomEnergyBar
         {
             Plugin.Log?.Debug($"{name}: OnDestroy()");
             this.gameEnergyCounter.gameEnergyDidChangeEvent -= this.GameEnergyCounter_gameEnergyDidChangeEvent;
-            this.gameEnergyUIPanel = null;
         }
         #endregion
-
-        [Inject]
-        private void Constractor(DiContainer container)
-        {
-            this.gameEnergyCounter = container.TryResolve<GameEnergyCounter>();
-            this.gameEnergyUIPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().FirstOrDefault();
-            this.barImage = gameEnergyUIPanel?.GetField<Image, GameEnergyUIPanel>("_energyBar");
-        }
-
         private void GameEnergyCounter_gameEnergyDidChangeEvent(float obj)
         {
             if (barImage == null) {
