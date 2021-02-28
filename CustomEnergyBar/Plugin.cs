@@ -30,7 +30,8 @@ namespace CustomEnergyBar
             Instance = this;
             Log = logger;
             Log.Info("CustomEnergyBar initialized.");
-            zenjector.OnGame<GameInstaller>();
+            zenjector.OnGame<GameInstaller>(false).OnlyForMultiplayer();
+            zenjector.OnGame<GameInstaller>().OnlyForStandard();
         }
 
         #region BSIPA Config
