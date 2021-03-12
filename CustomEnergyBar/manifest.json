@@ -3,9 +3,9 @@
   "id": "CustomEnergyBar",
   "name": "CustomEnergyBar",
   "author": "",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
-  "gameVersion": "1.13.0",
+  "gameVersion": "1.13.5",
   "dependsOn": {
     "BSIPA": "^4.0.5",
     "SiraUtil": "^2.0.0"

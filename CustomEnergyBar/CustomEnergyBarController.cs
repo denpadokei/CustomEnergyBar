@@ -29,7 +29,7 @@ namespace CustomEnergyBar
         private Image fullIcon;
         private Color DefaltColor;
         [Inject]
-        private void Constractor(GameplayCoreSceneSetupData gameplayCoreSceneSetupData, GameEnergyCounter gameEnergyCounter)
+        private void Constractor(GameEnergyCounter gameEnergyCounter)
         {
             this.gameEnergyCounter = gameEnergyCounter;
             
@@ -51,10 +51,10 @@ namespace CustomEnergyBar
                     item.color = Color.red;
                 }
             }
-            var difficultyBeatmap = gameplayCoreSceneSetupData.difficultyBeatmap;
-            if (0 < difficultyBeatmap.beatmapData.spawnRotationEventsCount) {
-                this.barImage.rectTransform.sizeDelta = new Vector2(0f, 0.7f);
-            }
+            //var difficultyBeatmap = gameplayCoreSceneSetupData.difficultyBeatmap;
+            //if (0 < difficultyBeatmap.beatmapData.spawnRotationEventsCount) {
+            //    this.barImage.rectTransform.sizeDelta = new Vector2(0f, 0.7f);
+            //}
             this.fullIconMaterial = Instantiate(this.fullIcon.material);
             this.fullIcon.material = this.fullIconMaterial;
         }
